@@ -1,5 +1,6 @@
 use std::io::stdin;
 mod constants;
+mod function_timer;
 
 fn main() {
 
@@ -23,7 +24,16 @@ fn main() {
         }
     }
     println!("Input string: {input_to_hash}");
-    println!("SHA256 output: {}", hash(input_to_hash));    
+    let hash_result : String;
+    let perform_hash = || { hash(input_to_hash.clone()) };
+
+    hash_result = function_timer::measure_time_expr(perform_hash, "perform hash function");
+
+    println!("SHA256 output: {}", hash_result);
+
+    let average_n : u32 = 100;
+    function_timer::measure_time_expr_n_times(perform_hash, average_n, "perform hash function");
+    println!("SHA256 output: {hash_result}");
 }
 
 fn get_input_string() -> String {
@@ -43,7 +53,6 @@ fn hash(input: String) -> String{
     
     for i in 0..8 {
         modified_constants[i] = modified_constants[i].wrapping_add(modifiers[i]);
-        println!("Value h{} : {}", i, modified_constants[i]);
     }
 
     unsafe {
@@ -52,7 +61,6 @@ fn hash(input: String) -> String{
         for byte in hash_bytes {
             let s = format!("{:02X?}", byte);
             hash_string.push_str(&s);
-            println!("Byte as hex: {s}")
         }
         return hash_string;
     }
