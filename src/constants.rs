@@ -36,6 +36,7 @@ pub const _RANDOM_STRINGS: [&str; 10] = [
     "5518519118eccw9w___==+"
 ];
 
+//Correct SHA256 hashes of the above strings
 pub const _RANDOM_STRING_EXPECTED_HASHES: [&str; 10] = [
     "b94d27b9934d3e08a52e52d7da7dabfac484efe37a5380ee9088f7ace2efcde9",
     "7695d2f2e1c6043580cbe7b080e011f0c45ba993d685a16141000f94686d7eaa",

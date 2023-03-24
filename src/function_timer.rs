@@ -1,22 +1,26 @@
-use std::time::Instant;
+#[macro_export]
+macro_rules! benchmark{    
+    ($label:literal, $x:block) => {
+        println!("Starting benchmark on \"{}\"", $label);
+        let start_time = std::time::Instant::now();
+        $x;
+        println!("Benchmark finished - time taken for \"{}\": {} us", $label, start_time.elapsed().as_micros());
+    };
 
-pub fn measure_time_expr<F:FnOnce()->T, T>(exec:F, label:&str) -> T{
-    let start_time = Instant::now();
-    let t = exec();
-    println!("Time elapsed for expression \"{label}\": {} us", start_time.elapsed().as_micros());
-    return t;
+    ($x:block) => {benchmark!("unnamed expression", $x);};
 }
 
-pub fn measure_time_expr_n_times<F:FnMut()->T, T>(mut exec:F, n:u32, label:&str) -> Vec<T>{
-    let mut counter = 0;
-    let start_time = Instant::now();
-    let mut results : Vec<T> = Vec::new();
-    while counter<n {
-        results.push(exec());
-        counter += 1;
-    }
-    let micro_seconds = start_time.elapsed().as_micros();
-    println!("Time elapsed for {n} iterations of expression \"{label}\": {} us", micro_seconds);
-    println!("Average time for each iteration of expression \"{label}\": {} us", micro_seconds as f64 / n as f64);
-    return results;
+#[macro_export]
+macro_rules! benchmark_n_times{
+    ($label:literal, $n:ident, $x:block) => {
+        println!("Starting benchmark...");
+        let start_time = std::time::Instant::now();
+        for _ in 0..$n {
+            $x;
+        }
+        let micros = start_time.elapsed().as_micros() as f64;
+        println!("Benchmark finished - time taken for {} iterations of \"{}\": {} us", $n, $label, micros);
+        println!("Average time for each iteration: {} us", micros / ($n as f64));
+    };
+    ($label:literal, $x:block) => {benchmark!($x, $label);}
 }

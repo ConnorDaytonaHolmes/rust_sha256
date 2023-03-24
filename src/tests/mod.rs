@@ -1,7 +1,7 @@
 #[cfg(test)]
 use crate::*;
 
-const HW_PADDED_BINARY_ARRAY_U8 : [u8;64] = [
+const _HW_PADDED_BINARY_ARRAY_U8 : [u8;64] = [
     0x68, 0x65, 0x6c, 0x6c, 0x6f, 0x20, 0x77, 0x6f,
     0x72, 0x6c, 0x64, 0x80, 0x00, 0x00, 0x00, 0x00,
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -12,7 +12,7 @@ const HW_PADDED_BINARY_ARRAY_U8 : [u8;64] = [
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x0b
 ];
 
-const HW_PADDED_BINARY_ARRAY_U32 : [u32;64] = [
+const _HW_PADDED_BINARY_ARRAY_U32 : [u32;64] = [
     0x68656c6c, 0x6f20776f, 0x726c6480, 0x00000000,
     0x00000000, 0x00000000, 0x00000000, 0x00000000,
     0x00000000, 0x00000000, 0x00000000, 0x00000000,
@@ -34,11 +34,11 @@ const HW_PADDED_BINARY_ARRAY_U32 : [u32;64] = [
 #[test]
 fn check_byte_padding(){
     let s = String::from("hello world");
-    let padded_binary_vector : Vec<u8> = Vec::from(HW_PADDED_BINARY_ARRAY_U8);
+    let padded_binary_vector : Vec<u8> = Vec::from(_HW_PADDED_BINARY_ARRAY_U8);
     for char in s.as_bytes(){
         println!("{char}");
     }
-    let stp_bv = string_to_padded_byte_vector(s);
+    let stp_bv = string_to_padded_byte_vector(&s);
 
     assert!(padded_binary_vector.len()==stp_bv.len(), "Length mismatch between correct binary vector & generated one.");
 
@@ -58,7 +58,13 @@ fn check_byte_padding(){
 }
 
 #[test]
-fn test_message_schedule(){
-    let padded_binary = Vec::from(HW_PADDED_BINARY_ARRAY_U8);
+fn _test_message_schedule(){
+    let _padded_binary = Vec::from(_HW_PADDED_BINARY_ARRAY_U8);
+}
 
+#[test]
+fn perform_hash_on_strings(){
+    for i in 0..constants::_RANDOM_STRINGS.len(){
+        assert_eq!(constants::_RANDOM_STRINGS[i], hash(constants::_RANDOM_STRINGS[i]))
+    }
 }
