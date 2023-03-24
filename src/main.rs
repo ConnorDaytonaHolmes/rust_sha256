@@ -1,9 +1,13 @@
 use std::io::stdin;
 mod constants;
 mod function_timer;
+mod tests;
 
 fn main() {
-
+    let b = "hello_world".len().to_be_bytes();
+    for c in b{
+        println!("{}", c);
+    }
     //initialize a default test string
     let mut input_to_hash : String = String::from("testingsha256_123123_123123_123123");
 
@@ -85,7 +89,7 @@ fn string_to_padded_byte_vector(string: String) -> Vec<u8>{
     }
     
     //append the u64 length
-    for byte in original_input_length.to_ne_bytes(){
+    for byte in original_input_length.to_be_bytes(){
         bytes.push(byte);
     }
     assert!(bytes.len()%64==0, "Byte array error: number of bits is not divisible by 512.");

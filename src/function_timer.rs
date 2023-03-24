@@ -7,7 +7,6 @@ pub fn measure_time_expr<F:FnOnce()->T, T>(exec:F, label:&str) -> T{
     return t;
 }
 
-
 pub fn measure_time_expr_n_times<F:FnMut()->T, T>(mut exec:F, n:u32, label:&str) -> Vec<T>{
     let mut counter = 0;
     let start_time = Instant::now();
@@ -21,4 +20,3 @@ pub fn measure_time_expr_n_times<F:FnMut()->T, T>(mut exec:F, n:u32, label:&str)
     println!("Average time for each iteration of expression \"{label}\": {} us", micro_seconds as f64 / n as f64);
     return results;
 }
-
