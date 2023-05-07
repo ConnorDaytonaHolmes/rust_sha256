@@ -22,8 +22,8 @@ pub const CUBE_ROOTS: [u32;64] = [
     0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208, 0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2
 ];
 
-
-pub const _RANDOM_STRINGS: [&str; 10] = [    
+#[cfg(test)]
+pub const TEST_STRINGS: [&str; 10] = [    
     "hello world",
     "robin williams",
     "a tired dog",
@@ -37,7 +37,8 @@ pub const _RANDOM_STRINGS: [&str; 10] = [
 ];
 
 //Correct SHA256 hashes of the above strings
-pub const _RANDOM_STRING_EXPECTED_HASHES: [&str; 10] = [
+#[cfg(test)]
+pub const EXPECTED_RESULTS: [&str; 10] = [
     "b94d27b9934d3e08a52e52d7da7dabfac484efe37a5380ee9088f7ace2efcde9",
     "7695d2f2e1c6043580cbe7b080e011f0c45ba993d685a16141000f94686d7eaa",
     "7a9c038b29a8bca06d194727dcd7935325fd37cec5afb16f9e799b27f073f114",
