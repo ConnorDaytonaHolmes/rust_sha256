@@ -3,40 +3,68 @@ mod constants;
 mod function_timer;
 mod tests;
 
-fn main() {    
-    let message = String::from("hello world");
-    let hash_result = benchmark!("Hashing \"hello world\"", hash(&message));
+fn main() {  
+    println!("Welcome!");  
+    let message = get_message();
+    let hash_result = benchmark!(format!("Hashing \"{message}\""), hash(&message));
     println!("Result: {hash_result}");
+
+    while let Some(msg) = msg_from_console() {
+        let hash_result = hash(&msg);
+        println!("Result: {hash_result}");        
+    }
 }
 
-//Gets the message to perform the hash on, either through command line arguments, the terminal, or a default fallback string
-fn _get_message() -> String {
-    //if the executable is supplied with command line arguments, read the entire line as a continuous string and run the hash function on that    
+//Gets the message to perform the hash on, either through command line arguments,
+//the terminal, or a default fallback string
+fn get_message() -> String {
+    //if the executable is supplied with command line arguments,
+    //read the entire line as a continuous string and run the hash function on that   
+    if let Some(m) = msg_from_command_line_args() {
+        return m;
+    } //otherwise ask the user for an input from the console
+    else if let Some(m) = msg_from_console() {
+        return m;
+    }
+    //if the user inputs nothing, use a default string
+    return String::from("Hello World!");
+        
+}
+
+
+fn msg_from_command_line_args() -> Option<String>{
     let args: Vec<String> = std::env::args().collect();
     if args.len()>1 {
-        return args[1..args.len()].join(" ");
+        println!("Using command line arguments as input...");
+        return Some(args[1..args.len()].join(" "));
     }
-    //otherwise ask the user to input a string into the terminal
-    else {        
-        println!("No command line arguments detected, input a string to be hashed.");
-        let typed_input = _get_input();
-        if typed_input.len() > 0 {
-            return typed_input;
+    None
+}
+
+fn msg_from_console() -> Option<String> {
+    println!("Type an input to be hashed, or hit Enter to exit.");
+    let input_result = get_input();
+        if let Ok(input) = input_result {
+            if input.len() > 0 {
+                return Some(input);
+            }
         }
-        //if the input is empty, a default string message is used instead
-        return String::from("testingsha256_123123_123123_123123");
-    }
+        None
 }
 
 //reads a single line from the terminal
-fn _get_input() -> String {
+fn get_input() -> std::io::Result<String> {
     let mut input = String::new();
-    stdin()
-        .read_line(&mut input)
-        .expect("Failed to read line");
-    return input.trim().to_owned();
+    match stdin().read_line(&mut input) {
+        Ok(_) => {
+            Ok(input.trim().to_owned())
+        },
+        Err(e) => {
+            println!("Line read error");
+            Err(e)
+        }
+    }
 }
-
 
 fn hash(message: &str) -> String {        
     println!("Performing hash on \"{message}\" ...");
@@ -119,16 +147,9 @@ fn create_message_schedule(message_chunk: &[u32]) -> [u32;64] {
 //Uses the previously bitshifted "word" array to create a smaller array of modified constants
 //These are appended to each other to build the final hash string
 fn compression_loop(working_variables : &[u32;8], words: &[u32;64]) -> [u32;8]{
-    let (mut a, mut b, mut c, mut d, mut e, mut f, mut g, mut h) = (
-        working_variables[0],
-        working_variables[1],
-        working_variables[2],
-        working_variables[3],
-        working_variables[4],
-        working_variables[5],
-        working_variables[6],
-        working_variables[7]
-    );
+    let (mut a, mut b, mut c, mut d, mut e, mut f, mut g, mut h) = 
+    (working_variables[0], working_variables[1], working_variables[2], working_variables[3], 
+        working_variables[4], working_variables[5], working_variables[6], working_variables[7]);
 
     for i in 0..=63 {
         let s1 : u32 = e.rotate_right(6) ^ e.rotate_right(11) ^ (e.rotate_right(25));
@@ -166,4 +187,3 @@ fn convert_modifier_array_to_string(mods: &[u32;8]) -> String{
     }
     return hash_string;
 }
-
